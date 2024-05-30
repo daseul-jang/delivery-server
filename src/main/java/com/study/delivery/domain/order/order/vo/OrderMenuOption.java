@@ -5,7 +5,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@ToString
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,7 +13,6 @@ public class OrderMenuOption {
     private final String optionGroupSubject;
     private final List<OptionItem> optionItems;
 
-    @ToString
     @Getter
     @Builder
     @AllArgsConstructor(access = AccessLevel.PROTECTED)

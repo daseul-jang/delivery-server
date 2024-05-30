@@ -1,6 +1,5 @@
 package com.study.delivery.domain.order.order.dto.request;
 
-import com.study.delivery.domain.order.order.entity.Order;
 import com.study.delivery.domain.order.order.vo.OrderMenu;
 import com.study.delivery.domain.order.order.vo.OrderMenuOption;
 import com.study.delivery.domain.restaurant.menu.entity.Menu;
@@ -9,7 +8,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@ToString
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

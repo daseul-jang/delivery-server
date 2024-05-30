@@ -4,7 +4,6 @@ import com.study.delivery.domain.order.order.application.OrderService;
 import com.study.delivery.domain.order.order.dto.request.OrderRequest;
 import com.study.delivery.domain.order.order.dto.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -12,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
