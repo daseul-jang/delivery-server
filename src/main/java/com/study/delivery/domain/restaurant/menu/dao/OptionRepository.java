@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface OptionRepository extends JpaRepository<Option, Long> {
     List<Option> findAllByRestaurant(Restaurant restaurant);
 
-    Optional<Option> findByIdAndTextAndRestaurant(Long id, String text, Restaurant restaurant);
+    Optional<Option> findByIdAndNameAndRestaurant(Long id, String name, Restaurant restaurant);
+
+    Optional<Option> findByName(String name);
 }

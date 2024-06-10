@@ -1,7 +1,7 @@
 package com.study.delivery.domain.order.order.dto.request;
 
 import com.study.delivery.domain.order.order.entity.Order;
-import com.study.delivery.domain.order.order.vo.OrderMenu;
+import com.study.delivery.domain.order.order.entity.OrderMenu;
 import com.study.delivery.domain.restaurant.restaurant.entity.Restaurant;
 import lombok.*;
 

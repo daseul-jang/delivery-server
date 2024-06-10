@@ -157,7 +157,7 @@ public class NotProd implements ApplicationRunner {
         for (String subject : subjects) {
             optionGroupRepository.save(
                     OptionGroup.builder()
-                            .subject(subject)
+                            .name(subject)
                             .restaurant(restaurant)
                             .build()
             );
@@ -232,7 +232,7 @@ public class NotProd implements ApplicationRunner {
     private Option createOption(Restaurant restaurant, String optionText, BigDecimal price, Long optionGroupId) {
         Option option = optionRepository.save(
                 Option.builder()
-                        .text(optionText)
+                        .name(optionText)
                         .price(price)
                         .restaurant(restaurant)
                         .build()

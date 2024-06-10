@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderMenuOption {
     private final Long optionGroupId;
-    private final String optionGroupSubject;
+    private final String optionGroupName;
     private final List<OptionItem> optionItems;
 
     @Getter
@@ -18,7 +18,7 @@ public class OrderMenuOption {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class OptionItem {
         private final Long optionId;
-        private final String optionText;
+        private final String optionName;
         private final BigDecimal optionPrice;
     }
 }

@@ -1,13 +1,14 @@
 package com.study.delivery.domain.order.order.dto.response;
 
 import com.study.delivery.domain.order.order.entity.Order;
-import com.study.delivery.domain.order.order.vo.OrderMenu;
+import com.study.delivery.domain.order.order.entity.OrderMenu;
 import com.study.delivery.domain.restaurant.restaurant.dto.response.RestaurantResponse;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -27,9 +28,9 @@ public class OrderResponse {
     private BigDecimal orderPrice;
     private BigDecimal deliveryPrice;
     private BigDecimal totalPrice;
-    private List<OrderMenu> orderMenus;
+    private List<OrderMenuResponse> orderMenus;
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse of(Order order, List<OrderMenuResponse> orderMenuResponses) {
         return OrderResponse.builder()
                 .id(order.getId())
                 .restaurant(RestaurantResponse.of(order.getRestaurant()))
@@ -44,7 +45,7 @@ public class OrderResponse {
                 .orderPrice(order.getOrderPrice())
                 .deliveryPrice(order.getDeliverPrice())
                 .totalPrice(order.getTotalPrice())
-                .orderMenus(order.getOrderMenus())
+                .orderMenus(orderMenuResponses)
                 .build();
     }
 }

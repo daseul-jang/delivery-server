@@ -3,6 +3,7 @@ package com.study.delivery.domain.restaurant.restaurant.entity;
 import com.study.delivery.domain.restaurant.restaurant.vo.BusinessHour;
 import com.study.delivery.domain.restaurant.restaurant.vo.DeliveryFee;
 import com.study.delivery.global.entity.BaseEntity;
+import com.study.delivery.global.exception.BusinessException;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
+import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 
@@ -30,4 +32,10 @@ public class Restaurant extends BaseEntity {
     private BigDecimal minOrderPrice;
 
     private BigDecimal deliveryPrice;
+
+    public void verifyName(String name) {
+        if (!this.name.equals(name)) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "가게가 변경되었어요!");
+        }
+    }
 }
