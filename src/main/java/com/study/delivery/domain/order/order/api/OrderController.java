@@ -30,8 +30,5 @@ public class OrderController {
         return ResponseEntity.created(location).body(orderResponse);
     }
 
-    @GetMapping("{restaurantId}")
-    public ResponseEntity<List<OrderResponse>> getOrder(@PathVariable("restaurantId") Long restaurantId) {
-        return ResponseEntity.ok(orderService.getOrders(restaurantId));
-    }
+
 }

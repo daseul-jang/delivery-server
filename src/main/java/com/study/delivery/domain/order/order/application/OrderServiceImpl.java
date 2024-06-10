@@ -41,21 +41,6 @@ public class OrderServiceImpl implements OrderService {
     private final OptionGroupRepository optionGroupRepository;
     private final OptionRepository optionRepository;
 
-    @Override
-    public List<OrderResponse> getOrders(Long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "존재하지 않는 가게"));
-
-        return orderRepository.findAllByRestaurant(restaurant).stream()
-                .map(order -> {
-                    List<OrderMenu> orderMenus = orderMenuRepository.findAllByOrder(order);
-                    List<OrderMenuResponse> orderMenuResponses =
-                            orderMenus.stream().map(OrderMenuResponse::of).toList();
-
-                    return OrderResponse.of(order, orderMenuResponses);
-                }).collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public OrderResponse createOrder(OrderRequest orderRequest) {
