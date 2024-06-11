@@ -2,7 +2,7 @@ package com.study.delivery.domain.order.order.dto.request;
 
 import com.study.delivery.domain.order.order.entity.Order;
 import com.study.delivery.domain.order.order.entity.OrderMenu;
-import com.study.delivery.domain.restaurant.restaurant.entity.Restaurant;
+import com.study.delivery.domain.restaurant.entity.Restaurant;
 import lombok.*;
 
 import java.math.BigDecimal;

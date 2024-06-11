@@ -1,8 +1,6 @@
 package com.study.delivery.domain.order.order.dto.request;
 
-import com.study.delivery.domain.order.order.entity.OrderMenu;
 import com.study.delivery.domain.order.order.vo.OrderMenuOption;
-import com.study.delivery.domain.restaurant.menu.entity.Menu;
 import lombok.*;
 
 import java.math.BigDecimal;

@@ -1,7 +1,7 @@
 package com.study.delivery.domain.order.order.entity;
 
 import com.study.delivery.domain.order.order.dto.request.OrderRequest;
-import com.study.delivery.domain.restaurant.restaurant.entity.Restaurant;
+import com.study.delivery.domain.restaurant.entity.Restaurant;
 import com.study.delivery.global.entity.BaseEntity;
 import com.study.delivery.global.exception.BusinessException;
 import jakarta.persistence.*;

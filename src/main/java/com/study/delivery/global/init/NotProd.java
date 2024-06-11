@@ -1,9 +1,9 @@
 package com.study.delivery.global.init;
 
-import com.study.delivery.domain.restaurant.menu.dao.*;
-import com.study.delivery.domain.restaurant.menu.entity.*;
-import com.study.delivery.domain.restaurant.restaurant.dao.RestaurantRepository;
-import com.study.delivery.domain.restaurant.restaurant.entity.Restaurant;
+import com.study.delivery.domain.menu.dao.*;
+import com.study.delivery.domain.menu.entity.*;
+import com.study.delivery.domain.restaurant.dao.RestaurantRepository;
+import com.study.delivery.domain.restaurant.entity.Restaurant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -12,11 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.LongStream;
 
 @Profile("!prod & !test")
 @Component
