@@ -2,6 +2,11 @@ package com.study.delivery.global.init;
 
 import com.study.delivery.domain.menu.dao.*;
 import com.study.delivery.domain.menu.entity.*;
+import com.study.delivery.domain.order.order.dao.OrderMenuRepository;
+import com.study.delivery.domain.order.order.dao.OrderRepository;
+import com.study.delivery.domain.order.order.entity.Order;
+import com.study.delivery.domain.order.order.entity.OrderMenu;
+import com.study.delivery.domain.order.order.vo.OrderMenuOption;
 import com.study.delivery.domain.restaurant.dao.RestaurantRepository;
 import com.study.delivery.domain.restaurant.entity.Restaurant;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +17,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Profile("!prod & !test")
 @Component
@@ -26,6 +35,8 @@ public class NotProd implements ApplicationRunner {
     private final OptionRepository optionRepository;
     private final MenuOptionGroupAssignmentRepository menuOptionGroupAssignmentRepository;
     private final MenuOptionAssignmentRepository menuOptionAssignmentRepository;
+    private final OrderMenuRepository orderMenuRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional
     @Override
@@ -39,6 +50,7 @@ public class NotProd implements ApplicationRunner {
         initMenu();
         initOptionGroup();
         initOption();
+        initOrder();
     }
 
     private void initRestaurant() {
@@ -48,7 +60,7 @@ public class NotProd implements ApplicationRunner {
             restaurantRepository.save(
                     Restaurant.builder()
                             .name(name)
-                            .minOrderPrice(BigDecimal.valueOf(20000))
+                            .minOrderPrice(BigDecimal.valueOf(17000))
                             .deliveryPrice(BigDecimal.valueOf(2000))
                             .build()
             );
@@ -144,7 +156,7 @@ public class NotProd implements ApplicationRunner {
         createOptionGroup(1L, "사이드 메뉴 선택", "소스 선택");
 
         // 반올림
-        createOptionGroup(2L, "사이즈", "도우 선택", "소스 선택");
+        createOptionGroup(2L, "사이즈 선택", "도우 선택", "소스 선택");
     }
 
     private void createOptionGroup(Long restaurantId, String... subjects) {
@@ -252,5 +264,106 @@ public class NotProd implements ApplicationRunner {
 
         menuOptionAssignment.addMenu(menu);
         menuOptionAssignment.addOption(option);
+    }
+
+    private void initOrder() {
+        Restaurant bhc = restaurantRepository.findById(1L).get();
+
+        IntStream.rangeClosed(1, 1000).forEach(i -> {
+            OrderMenuOption.OptionItem orderOptionItem = OrderMenuOption.OptionItem.builder()
+                    .optionId(6L)
+                    .optionName("뿌링뿌링 소스 추가")
+                    .optionPrice(BigDecimal.valueOf(2500))
+                    .build();
+
+            OrderMenuOption orderMenuOption = OrderMenuOption.builder()
+                    .optionGroupId(2L)
+                    .optionGroupName("소스 선택")
+                    .optionItems(new ArrayList<>(List.of(orderOptionItem)))
+                    .build();
+
+            OrderMenu orderMenu = orderMenuRepository.save(
+                    OrderMenu.builder()
+                            .name("뿌링클 콤보")
+                            .quantity(1L)
+                            .price(BigDecimal.valueOf(15000))
+                            .totalPrice(BigDecimal.valueOf(17500))
+                            .options(new ArrayList<>(List.of(orderMenuOption)))
+                            .build()
+            );
+
+            Order order = orderRepository.save(
+                    Order.builder()
+                            .orderNo("testOrderNo" + i)
+                            .ordererName("tester" + i)
+                            .ordererPhone("010" + createPhoneNumber())
+                            .address("광주 광역시 서구 운천로")
+                            .addressDetail("자바빌 404호")
+                            .orderRequest("")
+                            .deliveryRequest("문 앞에 두고 문자주세요.")
+                            .orderPrice(orderMenu.getTotalPrice())
+                            .deliverPrice(bhc.getDeliveryPrice())
+                            .totalPrice(orderMenu.getTotalPrice().add(bhc.getDeliveryPrice()))
+                            .orderMenus(new ArrayList<>(List.of(orderMenu)))
+                            .restaurant(bhc)
+                            .build()
+            );
+
+            orderMenu.addOrder(order);
+        });
+
+        Restaurant banolim = restaurantRepository.findById(2L).get();
+
+        IntStream.rangeClosed(1, 1000).forEach(i -> {
+            OrderMenuOption.OptionItem orderOptionItem = OrderMenuOption.OptionItem.builder()
+                    .optionId(9L)
+                    .optionName("레귤러")
+                    .optionPrice(BigDecimal.valueOf(19900))
+                    .build();
+
+            OrderMenuOption orderMenuOption = OrderMenuOption.builder()
+                    .optionGroupId(3L)
+                    .optionGroupName("사이즈 선택")
+                    .optionItems(new ArrayList<>(List.of(orderOptionItem)))
+                    .build();
+
+            OrderMenu orderMenu = orderMenuRepository.save(
+                    OrderMenu.builder()
+                            .name("불고기 피자")
+                            .quantity(1L)
+                            .price(BigDecimal.ZERO)
+                            .totalPrice(BigDecimal.valueOf(19900))
+                            .options(new ArrayList<>(List.of(orderMenuOption)))
+                            .build()
+            );
+
+            Order order = orderRepository.save(
+                    Order.builder()
+                            .orderNo("testOrderNo" + i)
+                            .ordererName("tester" + i)
+                            .ordererPhone("010" + createPhoneNumber())
+                            .address("광주 광역시 서구 운천로")
+                            .addressDetail("자바빌 405호")
+                            .orderRequest("")
+                            .deliveryRequest("직접 받을게요.")
+                            .orderPrice(orderMenu.getTotalPrice())
+                            .deliverPrice(banolim.getDeliveryPrice())
+                            .totalPrice(orderMenu.getTotalPrice().add(banolim.getDeliveryPrice()))
+                            .orderMenus(new ArrayList<>(List.of(orderMenu)))
+                            .restaurant(banolim)
+                            .build()
+            );
+
+            orderMenu.addOrder(order);
+        });
+    }
+
+    private String createPhoneNumber() {
+        Random random = new Random();
+
+        // 0~9까지의 숫자 여덟개를 생성
+        return IntStream.range(0, 8)
+                .mapToObj(i -> String.valueOf(random.nextInt(10)))
+                .collect(Collectors.joining());
     }
 }
