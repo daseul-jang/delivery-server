@@ -1,9 +1,11 @@
 package com.study.delivery.domain.restaurant.application;
 
 import com.study.delivery.domain.order.order.dto.response.OrderResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.time.LocalDate;
 
 public interface RestaurantService {
-    List<OrderResponse> getRestaurantOrders(Long restaurantId);
+    Page<OrderResponse> getRestaurantOrders(Long restaurantId, LocalDate start, LocalDate end, Pageable pageable);
 }
