@@ -33,7 +33,7 @@ public class OrderMenu extends BaseEntity {
     private List<OrderMenuOption> options = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", columnDefinition = "BIGINT", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     public void addOrder(Order order) {

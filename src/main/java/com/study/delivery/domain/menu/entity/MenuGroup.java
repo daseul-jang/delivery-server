@@ -23,6 +23,6 @@ public class MenuGroup extends BaseEntity {
     private List<MenuGroupAssignment> menus = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", columnDefinition = "BIGINT", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Restaurant restaurant;
 }

@@ -1,6 +1,5 @@
 package com.study.delivery.domain.restaurant.application;
 
-import com.study.delivery.domain.order.order.dao.OrderMenuRepository;
 import com.study.delivery.domain.order.order.dao.OrderRepository;
 import com.study.delivery.domain.order.order.dto.response.OrderMenuResponse;
 import com.study.delivery.domain.order.order.dto.response.OrderResponse;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final OrderRepository orderRepository;
-    private final OrderMenuRepository orderMenuRepository;
 
     @Override
     public Page<OrderResponse> getRestaurantOrders(Long restaurantId,
@@ -33,10 +31,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "존재하지 않는 가게입니다."));
 
-        Page<Order> pageOrders = orderRepository.findAllByRestaurantAndCreatedAtBetween(restaurant,
-                start.atStartOfDay(),
-                end.atTime(23, 59, 59),
-                pageable);
+        Page<Order> pageOrders = orderRepository.restaurantOrderSearchByPeriod(restaurant, start, end, pageable);
 
         return pageOrders.map(order ->
                 OrderResponse.of(order, order.getOrderMenus().stream().map(OrderMenuResponse::of).toList())

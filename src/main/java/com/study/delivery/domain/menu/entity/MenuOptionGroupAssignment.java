@@ -16,11 +16,11 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "menu_option_group_assignment")
 public class MenuOptionGroupAssignment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
+    @JoinColumn(name = "menu_id", columnDefinition = "BIGINT", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_group_id")
+    @JoinColumn(name = "option_group_id", columnDefinition = "BIGINT", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private OptionGroup optionGroup;
 
     public void addMenu(Menu menu) {

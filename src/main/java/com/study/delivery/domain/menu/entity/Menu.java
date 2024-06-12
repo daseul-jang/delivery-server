@@ -38,7 +38,7 @@ public class Menu extends BaseEntity {
     private List<MenuOptionAssignment> options = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", columnDefinition = "BIGINT", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Restaurant restaurant;
 
     public OrderMenu createOrderMenu(Order order, Long quantity) {
