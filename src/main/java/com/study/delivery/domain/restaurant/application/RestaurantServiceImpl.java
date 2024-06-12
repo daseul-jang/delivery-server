@@ -8,8 +8,8 @@ import com.study.delivery.domain.restaurant.dao.RestaurantRepository;
 import com.study.delivery.domain.restaurant.entity.Restaurant;
 import com.study.delivery.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,17 +24,17 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final OrderRepository orderRepository;
 
     @Override
-    public Page<OrderResponse> getRestaurantOrders(Long restaurantId,
-                                                   LocalDate start,
-                                                   LocalDate end,
-                                                   Pageable pageable) {
+    public Slice<OrderResponse> getRestaurantOrders(Long restaurantId,
+                                                    LocalDate start,
+                                                    LocalDate end,
+                                                    Long lastId,
+                                                    Pageable pageable) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "존재하지 않는 가게입니다."));
 
-        Page<Order> pageOrders = orderRepository.restaurantOrderSearchByPeriod(restaurant, start, end, pageable);
+        Slice<Order> sliceOrders = orderRepository.restaurantOrderSearchByPeriod(restaurant, start, end, lastId, pageable);
 
-        return pageOrders.map(order ->
-                OrderResponse.of(order, order.getOrderMenus().stream().map(OrderMenuResponse::of).toList())
-        );
+        return sliceOrders.map(order ->
+                OrderResponse.of(order, order.getOrderMenus().stream().map(OrderMenuResponse::of).toList()));
     }
 }
