@@ -1,14 +1,14 @@
 package com.study.delivery.domain.order.order.dao.custom;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.delivery.domain.order.order.entity.Order;
 import com.study.delivery.domain.restaurant.entity.Restaurant;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -23,14 +23,26 @@ import static com.study.delivery.domain.restaurant.entity.QRestaurant.restaurant
 public class OrderCustomRepositoryImpl implements OrderCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * no-offset 기반 페이지네이션 (커서 기반 페이지네이션)
+     *
+     * @param targetRestaurant 주문 목록을 조회하는 가게
+     * @param start            조회 시작 일자
+     * @param end              조회 종료 일자
+     * @param lastId           주문의 마지막 id
+     * @param pageable         커서 정보를 담은 객체
+     * @return 주문 목록
+     */
     @Override
-    public Page<Order> restaurantOrderSearchByPeriod(Restaurant targetRestaurant,
-                                                     LocalDate start,
-                                                     LocalDate end,
-                                                     Pageable pageable) {
+    public Slice<Order> restaurantOrderSearchByPeriod(Restaurant targetRestaurant,
+                                                      LocalDate start,
+                                                      LocalDate end,
+                                                      Long lastId,
+                                                      Pageable pageable) {
         BooleanBuilder cond = new BooleanBuilder();
 
-        cond.and(order.restaurant.eq(targetRestaurant));
+        cond.and(order.restaurant.eq(targetRestaurant))
+                .and(ltCursorId(lastId));
 
         if (start != null && end != null) {
             cond.and(order.createdAt.between(start.atStartOfDay(), end.atTime(23, 59, 59)));
@@ -42,19 +54,29 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository {
 
         List<Order> orders = jpaQueryFactory
                 .selectFrom(order)
-                .leftJoin(order.restaurant, restaurant).fetchJoin()
-                .leftJoin(order.orderMenus, orderMenu).fetchJoin()
+                .leftJoin(order.restaurant, restaurant)
+                .leftJoin(order.orderMenus, orderMenu)
                 .where(cond)
                 .orderBy(order.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        JPAQuery<Long> total = jpaQueryFactory
-                .select(order.count())
-                .from(order)
-                .where(cond);
+        return checkLastPage(pageable, orders);
+    }
 
-        return PageableExecutionUtils.getPage(orders, pageable, total::fetchOne);
+    private BooleanExpression ltCursorId(Long lastId) {
+        return lastId == null ? null : order.id.lt(lastId);
+    }
+
+    private Slice<Order> checkLastPage(Pageable pageable, List<Order> orders) {
+        // 다음 데이터가 있는지 여부. true: 있음, false: 없음
+        boolean hasNext = false;
+
+        if (orders.size() > pageable.getPageSize()) {
+            hasNext = true;
+            orders.remove(pageable.getPageSize());
+        }
+
+        return new SliceImpl<>(orders, pageable, hasNext);
     }
 }
