@@ -10,7 +10,5 @@ import java.util.Optional;
 public interface OptionGroupRepository extends JpaRepository<OptionGroup, Long> {
     List<OptionGroup> findAllByRestaurant(Restaurant restaurant);
 
-    Optional<OptionGroup> findByIdAndNameAndRestaurant(Long id, String name, Restaurant restaurant);
-
     Optional<OptionGroup> findByName(String name);
 }
